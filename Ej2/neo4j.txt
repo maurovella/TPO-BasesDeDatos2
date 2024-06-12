@@ -1,0 +1,52 @@
+PREPARATIVOS
+
+LOAD CSV WITH HEADERS FROM "https://data.neo4j.com/northwind/products.csv" AS row
+CREATE (n:Product)
+SET n = row,
+n.unitPrice = toFloat(row.unitPrice),
+n.unitsInStock = toInteger(row.unitsInStock), n.unitsOnOrder = toInteger(row.unitsOnOrder),
+n.reorderLevel = toInteger(row.reorderLevel), n.discontinued = (row.discontinued <> "0")
+
+
+LOAD CSV WITH HEADERS FROM "https://data.neo4j.com/northwind/categories.csv" AS row
+CREATE (n:Category)
+SET n = row
+
+LOAD CSV WITH HEADERS FROM "https://data.neo4j.com/northwind/suppliers.csv" AS row
+CREATE (n:Supplier)
+SET n = row
+
+MATCH (p:Product),(c:Category)
+WHERE p.categoryID = c.categoryID
+CREATE (p)-[:PART_OF]->(c)
+
+MATCH (p:Product),(s:Supplier)
+WHERE p.supplierID = s.supplierID
+CREATE (s)-[:SUPPLIES]->(p)
+
+
+
+EJ A
+MATCH(p:Product) RETURN COUNT(p) AS TotalProducts
+
+RTA: TotalProducts : 77
+
+EJ B
+MATCH(p:Product) WHERE p.productName = 'Queso Cabrales' RETURN p.productName, p.unitPrice
+
+RTA: p.productName : 'Queso Cabrales' , p.unitPrice : '21.0' 
+
+EJ C
+MATCH(p:Product) --( c:Category) WHERE p.categoryID= c.categoryID AND c.categoryName = 'Condiments' RETURN Count(p) as TotalCondiments
+
+RTA: TotalCondiments : 12
+
+EJ D
+MATCH(p:Product)--(s:Supplier) WHERE p.supplierID = s.supplierID AND s.country = 'UK' return p.productName, p.unitPrice LIMIT 3
+
+RTA:
+
+p.productName	p.unitPrice
+"Chang"	19.0
+"Chai"	18.0
+"Aniseed Syrup"	10.0

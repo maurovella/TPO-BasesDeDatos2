@@ -1,0 +1,34 @@
+EJ 1
+
+mongoimport --host localhost --db mymongo --collection Album --type csv --file albumlist.csv --headerline
+
+EJ 2
+
+db.getCollection('Album').aggregate(
+  [
+    {
+      $group: {
+        _id: '$Year',
+        totalAlbums: { $sum: 1 }
+      }
+    },
+    { $sort: { totalAlbums: -1 } }
+  ]);
+
+
+EJ 3 y 4
+
+db.getCollection('Album').aggregate(
+  [
+    {
+      $addFields: {
+        score: { $subtract: [501, '$Number'] }
+      }
+    },
+    {
+      $group: {
+        _id: '$Artist',
+        scores: { $sum: '$score' }
+      }
+    }
+  ]);
