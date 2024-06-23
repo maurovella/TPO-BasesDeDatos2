@@ -41,19 +41,3 @@ if option == 'd':
     option_d(r, geo_key)
 if option == 'e':
     option_e()
-
-
-# EX 3.a 
-# GEORADIUS bataxi -58.479258 -34.582497 1 km
-# rta: 339
-# GEORADIUS bataxi -58.468606 -34.658304 1 km 
-# rta: 9
-# GEORADIUS bataxi -58.367862 -34.602938 1 km
-# rta: 242
-# EX 3.b
-# KEYS *
-# rta:1
-# EX 3.c
-# ZCARD bataxi
-# rta: 19148
-# EX 3.d: se utiliza un sorted set con una tecnica llamada geo hash, donde los bits de latitud y longitud se entrelazan para formar un entero unico de 52bits
